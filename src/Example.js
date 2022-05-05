@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Field } from "react-final-form";
-import { FORM_ERROR } from "final-form";
 import TextField from "@mui/material/TextField";
 import Button from "@material-ui/core/Button";
 import { styled } from "@mui/material/styles";
 import NumberFormat from "react-number-format";
+import PropTypes from "prop-types";
 
 const Container = styled("div")(() => ({
   width: "100%",
@@ -18,45 +18,52 @@ const onSubmit = (values) => {
     return { email: "Email tidak terdaftar" };
   }
   if (values.password !== "dedem123") {
-    return { [FORM_ERROR]: "Password Anda salah" };
+    return { password: "Password Anda salah" };
   }
   window.alert("LOGIN SUCCESS!");
 };
 
-// const maskingRp = (number, prefix) => {
-//   const separated = number
-//     .replace(/[^\d]/g, "")
-//     .replace(/\d{1,3}(?=(\d{3})+$)/g, "$&.");
+const Example = () => {
+  const [values, setValues] = React.useState({
+    // textmask: "(100) 000-0000",
+    numberformat: "",
+  });
 
-//   return prefix === undefined
-//   ? separated
-//   : separated
-//   ? `${prefix} ${separated}`
-//   : "";
-// };
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
+    props,
+    ref
+  ) {
+    const { onChange, ...other } = props;
 
-const Contoh = () => {
-  const CurrencyFormat = ({ ref, input, ...other }) => (
-    <NumberFormat
-      {...other}
-      value={input.value}
-      thousandSeparator
-      getInputRef={ref}
-      onValueChange={(target) => input.onChange({ target })}
-      isNumericString
-    />
-  );
-  // const initialState = {
-  //   donation: ""
-  // }
+    return (
+      <NumberFormat
+        {...other}
+        getInputRef={ref}
+        onValueChange={(values) => {
+          onChange({
+            target: {
+              name: props.name,
+              value: values.value,
+            },
+          });
+        }}
+        thousandSeparator
+        isNumericString
+        prefix="Rp "
+      />
+    );
+  });
 
-  // const [donasi, setDonasi] = useState(initialState)
-
-  // const handleValue = (event) => {
-  //   const { name, value } = event.target;
-
-  //   setDonasi({ ...donasi, [name]: value });
-  // }
+  NumberFormatCustom.propTypes = {
+    name: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+  };
 
   return (
     <Container>
@@ -79,6 +86,7 @@ const Contoh = () => {
           }
           return errors;
         }}
+
         render={({ submitError, handleSubmit, submitting }) => (
           <form onSubmit={handleSubmit}>
             <div
@@ -127,13 +135,7 @@ const Contoh = () => {
                   />
                 )}
               </Field>
-              <Field
-                name="donation"
-                // prefix="Rp "
-                // component={CurrencyFormat}
-                // format={(value) => (value === "" ? "" : Number(value / 100))}
-                // parse={(value) => (value === "" ? String(value) : value * 100)}
-              >
+              <Field name="donation">
                 {({ input, meta }) => (
                   <TextField
                     id="outlined-donation-input"
@@ -143,8 +145,11 @@ const Contoh = () => {
                     autoComplete="off"
                     placeholder="Masukkan Donasi Kamu"
                     sx={{ margin: "10px" }}
-                    prefix="Rp "
-                    value=""
+                    value={values.numberformat}
+                    onChange={handleChange}
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                    }}
                     error={(meta.error || meta.submitError) && meta.touched}
                     helperText={
                       (meta.error && meta.touched && meta.error) ||
@@ -178,4 +183,4 @@ const Contoh = () => {
   );
 };
 
-export default Contoh;
+export default Example;

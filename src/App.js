@@ -1,9 +1,9 @@
-import Contoh from './Contoh';
+import Example from './Example';
 
-function App() {
+const App = () => {
   return (
     <>
-    <Contoh />
+    <Example />
     </>
   );
 }
