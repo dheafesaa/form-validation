@@ -1,11 +1,11 @@
-import Example from './Example';
+import Example from "./Example";
 
 const App = () => {
   return (
     <>
-    <Example />
+      <Example />
     </>
   );
-}
+};
 
 export default App;

@@ -86,7 +86,6 @@ const Example = () => {
           }
           return errors;
         }}
-
         render={({ submitError, handleSubmit, submitting }) => (
           <form onSubmit={handleSubmit}>
             <div
